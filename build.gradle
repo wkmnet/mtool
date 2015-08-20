@@ -1,0 +1,32 @@
+import javax.tools.JavaCompiler
+
+//java
+apply plugin: 'java'
+
+//idea
+apply plugin: 'idea'
+
+//war
+apply plugin: 'war'
+
+//jetty
+apply plugin: 'jetty'
+
+tasks.withType(JavaCompiler){
+    sourceCompatibility = 1.7
+    targetCompatibility = 1.7
+}
+
+repositories {
+    //mavenCentral()
+    maven {url "http://maven.oschina.net/content/groups/public/"}
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+    compile 'com.jfinal:jfinal:1.8'
+    compile 'log4j:log4j:1.2.17'
+    compile 'javax.servlet:javax.servlet-api:3.1.0'
+}
+
+
