@@ -2,6 +2,8 @@ package org.wkm.mtool.config;
 
 import com.jfinal.config.*;
 import com.jfinal.render.ViewType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.wkm.mtool.controller.TestController;
 
 /**
@@ -9,9 +11,12 @@ import org.wkm.mtool.controller.TestController;
  */
 public class TestConfig extends JFinalConfig{
 
+    private static Logger logger = LoggerFactory.getLogger(TestConfig.class);
+
 
     @Override
     public void configConstant(Constants me) {
+        logger.info("init configConstant");
         me.setDevMode(true);
         me.setEncoding("UTF-8");
         me.setViewType(ViewType.OTHER);
@@ -19,6 +24,7 @@ public class TestConfig extends JFinalConfig{
 
     @Override
     public void configRoute(Routes me) {
+        logger.info("init configRoute");
         me.add("/", TestController.class);
     }
 
