@@ -1,6 +1,8 @@
 package org.wkm.mtool.controller;
 
 import com.jfinal.core.Controller;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,9 +12,12 @@ import java.util.Map;
  */
 public class TestController extends Controller{
 
+    private static Logger logger = LoggerFactory.getLogger(TestController.class);
+
 
     public void index(){
-        System.out.println("test...");
+        logger.info("test");
+        logger.info("{\"a\":\"b\"}");
         renderJson("{\"a\":\"b\"}");
 //        renderText("中华人民共和国！");
     }
