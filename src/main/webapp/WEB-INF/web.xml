@@ -8,7 +8,7 @@
         <filter-class>com.jfinal.core.JFinalFilter</filter-class>
         <init-param>
             <param-name>configClass</param-name>
-            <param-value>org.wkm.mtool.config.TestConfig</param-value>
+            <param-value>org.wkm.mtool.config.ToolConfig</param-value>
         </init-param>
     </filter>
 
