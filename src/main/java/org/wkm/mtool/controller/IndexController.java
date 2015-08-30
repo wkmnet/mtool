@@ -29,4 +29,8 @@ public class IndexController extends Controller {
         renderJson(result);
     }
 
+    public void html(){
+        render("/html/home.html");
+    }
+
 }
