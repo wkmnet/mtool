@@ -30,22 +30,25 @@
 </script>
 <body>
 <div ng-app="topMenu" ng-controller="loadMenuController">
-    <table>
-        <tr>
-            <td ng-repeat="m in menus">
-                <div class="btn-group">
-                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                        {{m.menuName}} <span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu" role="menu">
+    <nav class="navbar navbar-inverse" role="navigation">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">掌富通导航</a>
+        </div>
+        <div>
+            <ul class="nav navbar-nav" ng-repeat="m in menus">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        {{m.menuName}} <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
                         <li ng-repeat="cm in m.childMenus">
-                            <a href="{{cm.menuUrl}}">{{cm.menuName}}</a>
+                            <a target="_blank" href="{{cm.menuUrl}}">{{cm.menuName}}</a>
                         </li>
                     </ul>
-                </div>
-            </td>
-        </tr>
-    </table>
+                </li>
+            </ul>
+        </div>
+    </nav>
 </div>
 
 </body>

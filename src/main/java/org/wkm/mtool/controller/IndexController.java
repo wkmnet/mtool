@@ -40,14 +40,14 @@ public class IndexController extends Controller {
         List<Map<String,Object>> menus = new ArrayList<Map<String,Object>>();
 
         //查询所有菜单
-        for (int i = 0;i<2;i++){
+        for (int i = 0;i<5;i++){
             Map<String,Object> menu = new HashMap<String, Object>();
-            menu.put("menuName","测试菜单");
+            menu.put("menuName","BOSS系统" + i);
             List<Map<String,Object>> childMenus = new ArrayList<Map<String,Object>>();
-            for (int j = 0;j < 3;j++){
+            for (int j = 0;j < 15;j++){
                 Map<String,Object> childMenu = new HashMap<String, Object>();
-                childMenu.put("menuName","子菜单");
-                childMenu.put("menuUrl","abc.jsp");
+                childMenu.put("menuName","子菜单" + j);
+                childMenu.put("menuUrl","http://www.baidu.com");
                 childMenus.add(childMenu);
             }
             menu.put("childMenus",childMenus);
