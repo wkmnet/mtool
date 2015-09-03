@@ -4,9 +4,7 @@ import com.jfinal.core.Controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -26,11 +24,37 @@ public class IndexController extends Controller {
         result.put("sex","未知道");
         result.put("location","中华人民共和国");
         log.info(result.toString());
-        renderJson(result);
+        render("/html/home.html");
     }
 
     public void html(){
         render("/html/home.html");
+    }
+
+    /**
+     * 加载所有菜单
+     */
+    public void loadMenus(){
+
+        //所有菜单
+        List<Map<String,Object>> menus = new ArrayList<Map<String,Object>>();
+
+        //查询所有菜单
+        for (int i = 0;i<2;i++){
+            Map<String,Object> menu = new HashMap<String, Object>();
+            menu.put("menuName","测试菜单");
+            List<Map<String,Object>> childMenus = new ArrayList<Map<String,Object>>();
+            for (int j = 0;j < 3;j++){
+                Map<String,Object> childMenu = new HashMap<String, Object>();
+                childMenu.put("menuName","子菜单");
+                childMenu.put("menuUrl","abc.jsp");
+                childMenus.add(childMenu);
+            }
+            menu.put("childMenus",childMenus);
+            menus.add(menu);
+        }
+        log.info("返回数据:" + menus);
+        renderJson(menus);
     }
 
 }

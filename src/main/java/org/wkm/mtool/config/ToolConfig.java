@@ -1,6 +1,7 @@
 package org.wkm.mtool.config;
 
 import com.jfinal.config.*;
+import com.jfinal.ext.handler.ContextPathHandler;
 import com.jfinal.render.ViewType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,5 +57,6 @@ public class ToolConfig extends JFinalConfig{
     @Override
     public void configHandler(Handlers me) {
         //To change body of implemented methods use File | Settings | File Templates.
+        me.add(new ContextPathHandler("cxt"));
     }
 }
