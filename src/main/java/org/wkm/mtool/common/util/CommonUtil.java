@@ -1,5 +1,7 @@
 package org.wkm.mtool.common.util;
 
+import java.util.UUID;
+
 /**
  * Created with IntelliJ IDEA.
  * Project name : mtool
@@ -21,4 +23,12 @@ public class CommonUtil {
      * UTF-8编码
      */
     public static String CHARSET_UTF_8 = "UTF-8";
+
+    /**
+     * ID生成器
+     * @return
+     */
+    public static String createId(){
+        return UUID.randomUUID().toString().replace("-","");
+    }
 }

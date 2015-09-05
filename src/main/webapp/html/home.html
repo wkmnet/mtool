@@ -16,15 +16,93 @@
     <!--bootstrap js-->
     <script src="http://libs.baidu.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
 
+    <!--json2 工具-->
+    <script src="https://github.com/douglascrockford/JSON-js/blob/master/json2.js"></script>
+
     <title>首页</title>
 </head>
 
 <script>
-    var topMenu = angular.module("topMenu",[]);
+    var topMenu = angular.module("topMenu",[],function($httpProvider){
+        $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
+    });
     topMenu.controller("loadMenuController",function($scope,$http){
+        $scope.manageShow = false;
+        $scope.showMessage = false;
+        $scope.showWarnMessage = false;
+        $scope.showLink = false;
+        $scope.itemForm = {"id":"","parentId":"","menuName":"","menuLink":""};
         $http.get('/loadMenus').success(function(response){
             $scope.menus = response;
         });
+
+        $scope.showMangeMenu = function(){
+            $scope.manageShow = !$scope.manageShow;
+        }
+        $scope.editMenuItem = function(itemId){
+            $scope.showWarnMessage = false;
+            $http.get('/loadChildMenu/' + itemId).success(function(response){
+                var result = response;
+                if(result.isSuccess){
+                    $scope.itemForm = result.data;
+                    $scope.showItemForm = true;
+                    $scope.showLink = true;
+                } else {
+                    $scope.warnMessage = result.message;
+                    $scope.showWarnMessage = true;
+                }
+            });
+
+        }
+        $scope.saveMenuItem = function(){
+            var data = "id=" + $scope.itemForm.id + "&parentId=" + $scope.itemForm.parentId +
+                    "&menuName=" + $scope.itemForm.menuName + "&menuLink=" + $scope.itemForm.menuLink;
+            $http.post("/saveChildMenu",data).success(function(response){
+                var result = response;
+                if(result.isSuccess){
+                    $scope.message = result.message;
+                    $scope.showMessage = true;
+                    $http.get('/loadMenus').success(function(response){
+                        $scope.menus = response;
+                    });
+                } else {
+                    $scope.warnMessage = result.message;
+                    $scope.showWarnMessage = true;
+                }
+            });
+        }
+        $scope.deleteMenuItem = function(itemId){
+            $http.post("/deleteMenu/" + itemId).success(function(response){
+                var result = response;
+                if(result.isSuccess){
+                    $scope.message = result.message;
+                    $scope.showMessage = true;
+                    $http.get('/loadMenus').success(function(response){
+                        $scope.menus = response;
+                    });
+                    $scope.showItemForm = false;
+                } else {
+                    $scope.warnMessage = result.message;
+                    $scope.showWarnMessage = true;
+                }
+            });
+        }
+        $scope.cancelEditMenuItem = function(){
+            $scope.showItemForm = false;
+        }
+        $scope.addRootMenu = function(){
+            $scope.showItemForm = true;
+            $scope.showLink = false;
+            $scope.itemForm = {"id":"","parentId":"","menuName":"","menuLink":""};
+            $scope.itemForm.parentId="root";
+            $scope.itemForm.menuLink="rootLink";
+        }
+        $scope.addChildMenu = function(parentId){
+            $scope.showItemForm = true;
+            $scope.itemForm = {"id":"","parentId":"","menuName":"","menuLink":""};
+            $scope.itemForm.parentId = parentId;
+            $scope.showLink = true;
+        }
 
     });
 </script>
@@ -35,6 +113,20 @@
             <a class="navbar-brand" href="#">掌富通导航</a>
         </div>
         <div>
+            <ul class="nav navbar-nav">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        菜单管理 <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a ng-click="showMangeMenu()">管理菜单</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <div>
             <ul class="nav navbar-nav" ng-repeat="m in menus">
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -42,13 +134,72 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li ng-repeat="cm in m.childMenus">
-                            <a target="_blank" href="{{cm.menuUrl}}">{{cm.menuName}}</a>
+                            <a target="_blank" href="{{cm.menuLink}}">{{cm.menuName}}</a>
                         </li>
                     </ul>
                 </li>
             </ul>
         </div>
     </nav>
+    <table ng-show="manageShow">
+        <tr>
+            <td width="300">
+                <div class="panel-group" id="accordion">
+                    <div class="panel panel-default" ng-repeat="m in menus">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion"
+                                   href="#collapse{{$index}}">
+                                    {{m.menuName}}
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapse{{$index}}" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <button type="button" ng-click="editMenuItem(item.id)" class="btn btn-primary" ng-repeat="item in m.childMenus">{{item.menuName}}</button>
+                                <button type="button" ng-click="addChildMenu(m.id)" class="btn btn-primary">新增节点</button>
+                                <button type="button" ng-click="deleteMenuItem(m.id)" class="btn btn-primary">删除根节点</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" ng-click="addRootMenu()" class="btn btn-primary">新增菜单</button>
+            </td>
+            <td width="500">
+                <form class="form-horizontal" role="form" ng-show="showItemForm">
+                    <div class="form-group">
+                        <label for="firstname" class="col-sm-2 control-label">菜单名字</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="firstname"
+                                   placeholder="请输入菜单名" ng-model="itemForm.menuName">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastname" class="col-sm-2 control-label">菜单地址</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="lastname" ng-show="showLink"
+                                   placeholder="请输入地址" ng-model="itemForm.menuLink">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" class="btn btn-default" ng-click="saveMenuItem()">保存</button>
+                            <button type="submit" class="btn btn-default" ng-click="cancelEditMenuItem()">取消</button>
+                            <button type="submit" class="btn btn-default" ng-click="deleteMenuItem(itemForm.id)">删除</button>
+                        </div>
+                    </div>
+                </form>
+                <div id="message" class="alert alert-success" ng-show="showMessage">
+                    <a href="#" class="close" data-dismiss="alert">&times;</a>
+                    <strong>成功！</strong>{{message}}
+                </div>
+                <div id="warn" class="alert alert-warning" ng-show="showWarnMessage">
+                    <a href="#" class="close" data-dismiss="alert">&times;</a>
+                    <strong>警告！</strong>{{warnMessage}}
+                </div>
+            </td>
+        </tr>
+    </table>
 </div>
 
 </body>
