@@ -43,7 +43,7 @@ public class CalendarController extends Controller {
 
             result.put("startTime","00:00:00");
             result.put("endTime","16:50:00");
-            List<TradeTime> trades = TradeTime.tradeTime.find("select * from enable=1");
+            List<TradeTime> trades = TradeTime.tradeTime.find("select * from tradeTime where enable=1");
             if(trades != null){
                 if(trades.size() == 1){
                     result.put("startTime",trades.get(0).getStr("startTime"));
