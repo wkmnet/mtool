@@ -9,3 +9,21 @@ create table if not exists toolMenu(
     menuName varchar(60) comment '菜单名称',
     menuLink varchar(200) comment '菜单链接'
 )ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8;
+
+--节假日表
+drop table if exists holidayList;
+create table if not exists holidayList(
+    id varchar(16) primary key comment '主健',
+    startTime varchar(10) not null comment '开始时间',
+    endTime varchar(10) comment '结束时间'
+)ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8;
+
+--交易时间表
+drop table if exists tradeTime;
+create table if not exists tradeTime(
+    id varchar(50) primary key comment '主健',
+    enable int(1) not null default 0,
+    startTime varchar(10) not null comment '父菜单主健',
+    endTime varchar(10) comment '菜单名称'
+)ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8;
+

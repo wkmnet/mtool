@@ -9,8 +9,11 @@ import com.jfinal.render.ViewType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wkm.mtool.common.util.CommonUtil;
+import org.wkm.mtool.controller.CalendarController;
 import org.wkm.mtool.controller.IndexController;
+import org.wkm.mtool.model.HolidayList;
 import org.wkm.mtool.model.ToolMenu;
+import org.wkm.mtool.model.TradeTime;
 
 /**
  * Created with IntelliJ IDEA.
@@ -46,6 +49,7 @@ public class ToolConfig extends JFinalConfig{
 
         //路由设置
         me.add("/", IndexController.class);
+        me.add("/tool", CalendarController.class);
     }
 
     @Override
@@ -65,6 +69,8 @@ public class ToolConfig extends JFinalConfig{
         mysqlPlugin.setTransactionLevel(8);
         mysqlPlugin.setShowSql(true);
         mysqlPlugin.addMapping("toolMenu","id", ToolMenu.class);
+        mysqlPlugin.addMapping("holidayList","id", HolidayList.class);
+        mysqlPlugin.addMapping("tradeTime","id", TradeTime.class);
 
     }
 

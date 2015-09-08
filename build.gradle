@@ -40,6 +40,7 @@ dependencies {
 
 jettyRun {
     contextPath="/"
+    httpPort=9090
     stopPort=8191
     stopKey="stopMe"
 }
