@@ -6,8 +6,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wkm.mtool.common.util.CommonUtil;
+import org.wkm.mtool.common.util.ConstantUtil;
 import org.wkm.mtool.model.HolidayList;
 import org.wkm.mtool.model.TradeTime;
+import org.wkm.mtool.service.CalendarService;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -40,8 +42,8 @@ public class CalendarController extends Controller {
         if(StringUtils.isBlank(date)){
             result.put("isHoliday",true);
             result.put("message","查不到:" + date + ";按照节假日处理!");
-            result.put("startTime","00:00:00");
-            result.put("endTime","16:50:00");
+            result.put("startTime", ConstantUtil.startTime);
+            result.put("endTime",ConstantUtil.endTime);
             log.info("返回结果:" + result);
             renderJson(result);
         }
@@ -70,8 +72,8 @@ public class CalendarController extends Controller {
                         result.put("message",date + "的类型不确定:" + holiday.getInt("holidayType"));
                 }
             }
-            result.put("startTime","00:00:00");
-            result.put("endTime","16:50:00");
+            result.put("startTime",ConstantUtil.startTime);
+            result.put("endTime",ConstantUtil.endTime);
             TradeTime trades = TradeTime.tradeTime.findById(date);
             if(trades != null){
                 result.put("startTime", trades.getStr("startTime"));
@@ -81,8 +83,8 @@ public class CalendarController extends Controller {
             log.info("异常信息:" + e.getMessage(),e);
             result.put("isHoliday",true);
             result.put("message",e.getMessage());
-            result.put("startTime","00:00:00");
-            result.put("endTime","16:50:00");
+            result.put("startTime",ConstantUtil.startTime);
+            result.put("endTime",ConstantUtil.endTime);
         }finally {
             log.info("返回结果:" + result);
             renderJson(result);
@@ -134,6 +136,8 @@ public class CalendarController extends Controller {
     private boolean saveHolidayTime(JSONObject message,String date){
         try {
             //保存节假日信息
+            CalendarService service = enhance(CalendarService.class);
+            service.saveHolidayTime(message,date);
             HolidayList holiday = new HolidayList().set("id",date);
             holiday.set("holidayType",message.getInt(date));
             switch (message.getInt(date)){
