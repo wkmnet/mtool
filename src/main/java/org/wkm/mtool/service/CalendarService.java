@@ -3,11 +3,11 @@ package org.wkm.mtool.service;
 import com.jfinal.aop.Before;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.tx.Tx;
-import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wkm.mtool.model.HolidayList;
 import org.wkm.mtool.model.TradeTime;
+
 
 /**
  * Create with IntelliJ IDEA
@@ -32,42 +32,17 @@ public class CalendarService {
      * @return
      */
     @Before(Tx.class)
-    public boolean saveHolidayTime(JSONObject message,String date){
-//        try {
-            //保存节假日信息
-            HolidayList holiday = new HolidayList().set("id",date);
-            holiday.set("holidayType",message.getInt(date));
-            switch (message.getInt(date)){
-                case 0  :
-                    holiday.set("holidayDesc","工作日");
-                    break;
-                case 1  :
-                    holiday.set("holidayDesc","休息日");
-                    break;
-                case 2  :
-                    holiday.set("holidayDesc","节假日");
-                    break;
-                default:
-                    holiday.set("holidayDesc","未知信息");
-            }
-//            holiday.save();
-            Db.save("holidayList",holiday.toRecord());
+    public void saveHolidayTime(){
+        TradeTime tradeTime = new TradeTime().set("id","20160101")
+        .set("startTime","00:01:02")
+        .set("endTime","16:00:00");
 
-            //保持交易时间信息
-            TradeTime tradeTime = new TradeTime();
-            tradeTime.set("id",date);
-            tradeTime.set("startTime","00:00:00");
-            tradeTime.set("endTime","16:50:00");
-//            tradeTime.save();
-            Db.save("tradeTime",tradeTime.toRecord());
-
-
-            return true;
-//        } catch (Exception e){
-//            log.error("保存数据库失败:" + e.getMessage(),e);
-//            return false;
-//        }
-
+        Db.save("tradeTime",tradeTime.toRecord());
+        log.info("save:" + tradeTime.toJson());
+        HolidayList holidayList = new HolidayList();
+        Db.save("", holidayList.toRecord());
+        log.info("save:" + holidayList.toJson());
+        return;
     }
 
 }

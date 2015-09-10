@@ -14,7 +14,6 @@ import org.wkm.mtool.service.CalendarService;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -122,7 +121,7 @@ public class CalendarController extends Controller {
         }
         Map<String,Object> result = new HashMap<String,Object>();
         result.put("isSuccess",true);
-        result.put("message","同步数据成功!");
+        result.put("message", "同步数据成功!");
         renderJson(result);
     }
 
@@ -136,8 +135,6 @@ public class CalendarController extends Controller {
     private boolean saveHolidayTime(JSONObject message,String date){
         try {
             //保存节假日信息
-            CalendarService service = enhance(CalendarService.class);
-            service.saveHolidayTime(message,date);
             HolidayList holiday = new HolidayList().set("id",date);
             holiday.set("holidayType",message.getInt(date));
             switch (message.getInt(date)){
@@ -168,5 +165,14 @@ public class CalendarController extends Controller {
             return false;
         }
 
+    }
+
+    public void test(){
+        CalendarService calendar = enhance(CalendarService.class);
+        calendar.saveHolidayTime();
+        Map<String,Object> result = new HashMap<String,Object>();
+        result.put("isSuccess",true);
+        result.put("message", "同步数据成功!");
+        renderJson(result);
     }
 }
