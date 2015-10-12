@@ -2,6 +2,8 @@ import ch.qos.logback.core.ConsoleAppender
 import static ch.qos.logback.classic.Level.DEBUG
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder
 
+import static ch.qos.logback.classic.Level.INFO
+
 StringBuilder p = new StringBuilder();
 p.append("mtool %d{yyyy-MM-dd/HH:mm:ss} ");
 p.append("%-5level %thread ");
@@ -16,4 +18,4 @@ appender("CONSOLE", ConsoleAppender) {
     }
 }
 
-root(DEBUG, ["CONSOLE"])
+root(INFO, ["CONSOLE"])

@@ -11,10 +11,9 @@ topMenu.controller("loadMenuController",function($scope,$http){
     $scope.showWarnMessage = false;
     $scope.showLink = false;
     $scope.itemForm = {"id":"","parentId":"","menuName":"","menuLink":""};
-    $http.get('/loadMenus').success(function(response){
+    $http.get('loadMenus').success(function(response){
         $scope.menus = response;
     });
-
     $scope.showMangeMenu = function(){
         $scope.manageShow = !$scope.manageShow;
     }
@@ -82,5 +81,4 @@ topMenu.controller("loadMenuController",function($scope,$http){
         $scope.itemForm.parentId = parentId;
         $scope.showLink = true;
     }
-
 });

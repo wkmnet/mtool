@@ -1,10 +1,12 @@
 package org.wkm.mtool.controller;
 
+import com.jfinal.aop.Before;
 import com.jfinal.core.Controller;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wkm.mtool.common.util.CommonUtil;
+import org.wkm.mtool.interceptor.LoggerInterceptor;
 import org.wkm.mtool.model.ToolMenu;
 
 import java.util.*;
@@ -16,6 +18,7 @@ import java.util.*;
  * Time: 上午10:38
  * To change this template use File | Settings | File Templates.
  */
+@Before(LoggerInterceptor.class)
 public class IndexController extends Controller {
 
     private Logger log = LoggerFactory.getLogger(this.getClass());
