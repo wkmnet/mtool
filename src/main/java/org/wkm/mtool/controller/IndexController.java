@@ -2,6 +2,7 @@ package org.wkm.mtool.controller;
 
 import com.jfinal.aop.Before;
 import com.jfinal.core.Controller;
+import net.sf.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -162,11 +163,33 @@ public class IndexController extends Controller {
         return result;
     }
 
+    /**
+     * location 检测
+     */
     public void location(){
+
+        //经纬度信息
+        String location = getPara("location");
+        JSONObject result = new JSONObject();
+        if(StringUtils.isBlank(location)){
+            result.put("isSuccess",false);
+            result.put("message", "location:" + location);
+            renderJson(result.toString());
+            return;
+        }
+
+        String[] ls = StringUtils.split(location, ",");
+        if (ls.length != 2){
+            result.put("isSuccess",false);
+            result.put("message", "location:" + location);
+            renderJson(result.toString());
+            return;
+        }
+
         //经度
-        String longitude = getPara(0);
+        String longitude = ls[0];
         //纬度
-        String latitude = getPara(1);
+        String latitude = ls[1];
 
         //输出
         log.info("---" + CommonUtil.location(longitude, latitude));

@@ -17,4 +17,7 @@ public class ConstantUtil {
 
     //高德地图
     public static String GAODE_URL = "http://restapi.amap.com/v3/geocode/regeo";
+
+    //高德地图 key
+    public static String GAODE_KEY = "9e26589f641c31df80e5288b4ee554f1";
 }

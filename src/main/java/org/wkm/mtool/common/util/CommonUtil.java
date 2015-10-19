@@ -86,8 +86,12 @@ public class CommonUtil {
     public static String location(String longitude,String latitude){
         CloseableHttpClient httpClient = HttpClients.createDefault();
         JSONObject result = new JSONObject();
+        StringBuilder ps = new StringBuilder();
+        ps.append("&location=" + longitude + "," + latitude);
+        ps.append("&output=json");
+        ps.append("&extensions=all");
         HttpGet get = new HttpGet(ConstantUtil.GAODE_URL +
-                "?key=9e26589f641c31df80e5288b4ee554f1&location=" + longitude + "," + latitude);
+                "?key=" + ConstantUtil.GAODE_KEY + ps.toString());
         try{
             CloseableHttpResponse response = httpClient.execute(get);
             StatusLine status = response.getStatusLine();
