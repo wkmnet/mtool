@@ -14,4 +14,7 @@ public class ConstantUtil {
 
     //结束时间
     public static String endTime = "16:50:00";
+
+    //高德地图
+    public static String GAODE_URL = "http://restapi.amap.com/v3/geocode/regeo";
 }

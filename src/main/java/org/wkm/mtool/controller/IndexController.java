@@ -162,4 +162,16 @@ public class IndexController extends Controller {
         return result;
     }
 
+    public void location(){
+        //经度
+        String longitude = getPara(0);
+        //纬度
+        String latitude = getPara(1);
+
+        //输出
+        log.info("---" + CommonUtil.location(longitude, latitude));
+        renderJson(CommonUtil.location(longitude, latitude));
+
+    }
+
 }

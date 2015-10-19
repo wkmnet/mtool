@@ -82,4 +82,39 @@ public class CommonUtil {
         }
 
     }
+
+    public static String location(String longitude,String latitude){
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        JSONObject result = new JSONObject();
+        HttpGet get = new HttpGet(ConstantUtil.GAODE_URL +
+                "?key=9e26589f641c31df80e5288b4ee554f1&location=" + longitude + "," + latitude);
+        try{
+            CloseableHttpResponse response = httpClient.execute(get);
+            StatusLine status = response.getStatusLine();
+            int code = status.getStatusCode();
+            switch (code){
+                case    HttpStatus.SC_OK    :
+                    HttpEntity entity = response.getEntity();
+                    result.put("isSuccess",true);
+                    result.put("message",JSONObject.fromObject(EntityUtils.toString(entity)));
+                    return result.toString();
+                default:
+                    HttpEntity errorEntity = response.getEntity();
+                    result.put("isSuccess",false);
+                    result.put("message",EntityUtils.toString(errorEntity));
+            }
+        } catch (Exception e){
+            result.put("isSuccess",false);
+            result.put("message",e.getMessage());
+        } finally {
+            try {
+                get.releaseConnection();
+                httpClient.close();
+            } catch (IOException e){
+                result.put("isSuccess",false);
+                result.put("message",e.getMessage());
+            }
+            return result.toString();
+        }
+    }
 }
