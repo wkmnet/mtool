@@ -9,6 +9,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -25,6 +27,9 @@ import java.util.UUID;
  * To change this template use File | Settings | File Templates.
  */
 public class CommonUtil {
+
+    //日志输出
+    private static Logger LOG = LoggerFactory.getLogger(CommonUtil.class);
 
     private CommonUtil(){
         //静态方法
@@ -90,6 +95,8 @@ public class CommonUtil {
         ps.append("&location=" + longitude + "," + latitude);
         ps.append("&output=json");
         ps.append("&extensions=all");
+        LOG.info(ConstantUtil.GAODE_URL +
+                "?key=" + ConstantUtil.GAODE_KEY + ps.toString());
         HttpGet get = new HttpGet(ConstantUtil.GAODE_URL +
                 "?key=" + ConstantUtil.GAODE_KEY + ps.toString());
         try{
