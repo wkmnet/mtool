@@ -41,19 +41,17 @@ public class QRCodeService {
         File image = new File(new File(projectPath),"src/main/webapp/images");
 
         log.info("image path:" + image.getAbsolutePath());
-
-        String fileName = System.currentTimeMillis() + ".png";
+        String cl = String.valueOf(System.currentTimeMillis());
+        String fileName = cl + ".png";
         log.info("file name:" + fileName);
-
         encoderQRCode(cotent,new File(image,fileName));
-
-        return fileName;
+        return cl;
     }
 
     /**
      * 生成二维码(QRCode)图片
      * @param content
-     * @param imgPath
+     * @param imgFile
      */
     private void encoderQRCode(String content, File imgFile) {
         try {

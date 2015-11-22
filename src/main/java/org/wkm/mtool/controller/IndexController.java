@@ -10,6 +10,7 @@ import org.wkm.mtool.common.util.CommonUtil;
 import org.wkm.mtool.interceptor.LoggerInterceptor;
 import org.wkm.mtool.model.ToolMenu;
 
+import java.io.File;
 import java.util.*;
 
 /**
@@ -195,6 +196,14 @@ public class IndexController extends Controller {
         log.info("---" + CommonUtil.location(longitude, latitude));
         renderJson(CommonUtil.location(longitude, latitude));
 
+    }
+
+    public void images(){
+        String fileName = getPara(0);
+        File file = new File("/mnt/workspaces/idea_workspaces/mtool/mtool/src/main/webapp/images");
+        File find = new File(file,fileName + ".png");
+        log.info("return file:" + find.getAbsolutePath());
+        renderFile(find);
     }
 
 }
