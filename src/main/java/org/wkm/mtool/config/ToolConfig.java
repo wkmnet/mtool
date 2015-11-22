@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.wkm.mtool.common.util.CommonUtil;
 import org.wkm.mtool.controller.CalendarController;
 import org.wkm.mtool.controller.IndexController;
+import org.wkm.mtool.controller.ToolController;
 import org.wkm.mtool.model.HolidayList;
 import org.wkm.mtool.model.ToolMenu;
 import org.wkm.mtool.model.TradeTime;
@@ -50,6 +51,7 @@ public class ToolConfig extends JFinalConfig{
         //路由设置
         me.add("/", IndexController.class);
         me.add("/tool", CalendarController.class);
+        me.add("/tools", ToolController.class);
     }
 
     @Override

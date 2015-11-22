@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!--编码格式UTF-8-->
+    <meta charset="UTF-8">
+
+    <!-- latest Angular javascript -->
+    <script src="http://libs.cf/js/angular.min.js"></script>
+
+    <!--bootstrap css-->
+    <link href="http://libs.cf/css/bootstrap.min.css" rel="stylesheet">
+
+    <!--jquery-->
+    <script src="http://libs.cf/js/jquery.min.js"></script>
+
+    <!--bootstrap js-->
+    <script src="http://libs.cf/js/bootstrap.min.js"></script>
+
+    <!--json2 工具-->
+    <script src="js/tool.js"></script>
+
+    <title>首页</title>
+</head>
+<body>
+<div ng-app="toolApp" ng-controller="toolController" style="width: 80%;margin: auto">
+    <nav class="navbar navbar-inverse" role="navigation">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">掌富通工具</a>
+        </div>
+        <div>
+            <ul class="nav navbar-nav">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        测试工具 <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a ng-click="showQRTool()">二维码生成</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div style="padding-left: 50px" ng-show="showBody.index == 1">
+        <button type="button" class="btn btn-primary btn-lg" style="text-shadow: black 5px 3px 3px;">
+            <span class="glyphicon glyphicon-user"></span>二维码生成
+        </button>
+        <div class="page-header">
+            <h2>
+                <small>输入内容:</small>
+            </h2>
+        </div>
+        <p>
+            <div class="col-lg-6">
+                <div class="input-group">
+                    <input type="text" ng-model="inputData" class="form-control">
+                   <span class="input-group-btn">
+                      <button class="btn btn-default" ng-click="showImageMessage()" type="button">
+                          Go!
+                      </button>
+                   </span>
+                </div>
+            </div>
+        </p>
+        <br/>
+        <div class="page-header">
+            <h2>
+                <small>二维码如下:</small>
+            </h2>
+        </div>
+        <p>
+        <div class="row">
+            <div class="col-sm-6 col-md-3">
+                <a href="#" class="thumbnail">
+                    <img src="{{imageResource.src}}"
+                         alt="{{imageResource.alt}}">
+                </a>
+            </div>
+        </div>
+        <div id="m" class="alert alert-success" ng-show="showBody.error">
+            <a href="#" class="close" data-dismiss="alert">&times;</a>
+            <strong>响应信息:</strong>{{showBody.message}}
+        </div>
+        </p>
+    </div>
+</div>
+
+</body>
+</html>
