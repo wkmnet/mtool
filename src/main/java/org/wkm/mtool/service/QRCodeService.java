@@ -11,6 +11,7 @@
 package org.wkm.mtool.service;
 
 import com.swetake.util.Qrcode;
+import org.apache.http.Consts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,7 +62,7 @@ public class QRCodeService {
             qrcodeHandler.setQrcodeVersion(7);
 
             System.out.println(content);
-            byte[] contentBytes = content.getBytes("gb2312");
+            byte[] contentBytes = content.getBytes(Consts.UTF_8.name());
 
             BufferedImage bufImg = new BufferedImage(140, 140,
                     BufferedImage.TYPE_INT_RGB);
