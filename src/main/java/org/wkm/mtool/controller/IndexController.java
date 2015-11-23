@@ -200,8 +200,9 @@ public class IndexController extends Controller {
 
     public void images(){
         String fileName = getPara(0);
-        File file = new File("/mnt/workspaces/idea_workspaces/mtool/mtool/src/main/webapp/images");
-        File find = new File(file,fileName + ".png");
+        String projectPath = System.getProperty("user.dir");
+        File image = new File(new File(projectPath),"src/main/webapp/images");
+        File find = new File(image,fileName + ".png");
         log.info("return file:" + find.getAbsolutePath());
         renderFile(find);
     }
