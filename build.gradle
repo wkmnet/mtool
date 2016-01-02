@@ -18,7 +18,7 @@ tasks.withType(JavaCompiler){
 }
 
 repositories {
-    //mavenCentral()
+    mavenCentral()
     maven {url "http://maven.oschina.net/content/groups/public/"}
 }
 
