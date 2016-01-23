@@ -26,11 +26,11 @@ public class IndexController extends Controller {
     private Logger log = LoggerFactory.getLogger(this.getClass());
 
     public void index(){
-        render("/html/home.html");
+        render("/html/index.html");
     }
 
     public void html(){
-        render("/html/home.html");
+        render("/html/index.html");
     }
 
     /**
