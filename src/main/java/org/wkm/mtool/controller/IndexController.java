@@ -2,6 +2,7 @@ package org.wkm.mtool.controller;
 
 import com.jfinal.aop.Before;
 import com.jfinal.core.Controller;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -33,6 +34,10 @@ public class IndexController extends Controller {
         render("/html/index.html");
     }
 
+    public void menus(){
+        render("/html/menu.html");
+    }
+
     /**
      * 加载所有菜单
      */
@@ -42,7 +47,6 @@ public class IndexController extends Controller {
         List<Map<String,Object>> menus = new ArrayList<Map<String,Object>>();
 
         List<ToolMenu> roots = ToolMenu.menu.find("select * from toolMenu where parentId=?","root");
-
         for(ToolMenu root:roots){
             Map<String,Object> menu = new HashMap<String, Object>();
             menu.put("id",root.getStr("id"));
@@ -62,7 +66,28 @@ public class IndexController extends Controller {
             menu.put("childMenus",childMenus);
             menus.add(menu);
         }
-        log.info("返回数据:" + menus);
+        log.info("返回数据:" + JSONArray.fromObject(menus).toString(4));
+        renderJson(menus);
+    }
+
+    /**
+     * 加载所有根结点菜单
+     */
+    public void loadRootMenus(){
+        //所有菜单
+        List<Map<String,Object>> menus = new ArrayList<Map<String,Object>>();
+
+        List<ToolMenu> roots = ToolMenu.menu.find("select * from toolMenu where parentId=?","root");
+
+        for(ToolMenu root:roots){
+            Map<String,Object> menu = new HashMap<String, Object>();
+            menu.put("id",root.getStr("id"));
+            menu.put("parentId",root.getStr("parentId"));
+            menu.put("menuName",root.getStr("menuName"));
+            menu.put("menuLink",root.getStr("menuLink"));
+            menus.add(menu);
+        }
+        log.info("返回数据:" + JSONArray.fromObject(menus).toString(4));
         renderJson(menus);
     }
 
@@ -82,7 +107,7 @@ public class IndexController extends Controller {
         childMenu.put("parentId",menu.getStr("parentId"));
         childMenu.put("menuName",menu.getStr("menuName"));
         childMenu.put("menuLink",menu.getStr("menuLink"));
-        log.info("返回数据:" + childMenu);
+        log.info("返回数据:" + JSONObject.fromObject(childMenu).toString(4));
         renderJson(success("成功",childMenu));
     }
 
@@ -98,22 +123,34 @@ public class IndexController extends Controller {
             menu.set("id", CommonUtil.createId()).set("parentId",getPara("parentId"));
             menu.set("menuName",getPara("menuName")).set("menuLink",getPara("menuLink"));
         }else if (!StringUtils.isBlank(getPara("id")) && !StringUtils.isBlank(getPara("parentId"))){
-            menu.set("menuName",getPara("menuName")).set("menuLink",getPara("menuLink"));
+            menu = ToolMenu.menu.findById(getPara("id"));
+            if("root".equalsIgnoreCase(getPara("parentId"))){
+                menu.set("menuName", getPara("menuName"));
+            } else {
+                menu.set("menuName", getPara("menuName")).set("menuLink", getPara("menuLink"));
+            }
         } else {
             renderJson(fail("非法请求"));
             return;
         }
         try {
-            if(!menu.save()){
-                renderJson(fail("保存失败！"));
-                return;
+            if(StringUtils.isBlank(getPara("id"))){
+                if(!menu.save()){
+                    renderJson(fail("操作失败！"));
+                    return;
+                }
+            } else {
+                if(!menu.update()){
+                    renderJson(fail("操作失败！"));
+                    return;
+                }
             }
         } catch (RuntimeException e){
             renderJson(fail(e.getMessage()));
             return;
         }
 
-        renderJson(success("保存成功！"));
+        renderJson(success("操作成功！"));
     }
 
     public void deleteMenu(){
@@ -150,6 +187,7 @@ public class IndexController extends Controller {
         if(data != null){
             result.put("data",data);
         }
+        log.info("response:" + JSONObject.fromObject(result).toString(4));
         return result;
     }
 
@@ -161,6 +199,7 @@ public class IndexController extends Controller {
         } else {
             result.put("message",message);
         }
+        log.info("response:" + JSONObject.fromObject(result).toString(4));
         return result;
     }
 
