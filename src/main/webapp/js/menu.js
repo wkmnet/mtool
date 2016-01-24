@@ -35,9 +35,19 @@ modifyMenuApp.controller("modifyMenuController",function($scope,$http){
         });
     }
 
+    $scope.cancelEditMenuItem = function(){
+        $scope.itemForm = {"id":"","parentId":"","menuName":"","menuLink":""};
+    }
+
     //add root menu
     $scope.addRootMenu = function(){
         $scope.itemForm = {"id":"","parentId":"root","menuName":"","menuLink":"rootLink"};
+    }
+
+    //add child menu
+    $scope.addChildMenu = function(parentId){
+        $scope.itemForm = {"id":"","parentId":"","menuName":"","menuLink":""};
+        $scope.itemForm.parentId = parentId;
     }
 
     //save menu
@@ -74,6 +84,9 @@ modifyMenuApp.controller("modifyMenuController",function($scope,$http){
 
     //load all menus
     $scope.loadAllMenus = function(){
+        $http.get('loadRootMenus').success(function(response){
+            $scope.roots = response;
+        });
         $http.get('/loadMenus').success(function(response){
             $scope.menus = response;
         });

@@ -22,6 +22,21 @@ toolApp.controller("toolController",function($scope,$http){
         $scope.showBody.index = 1;
     };
 
+    //qr init
+    var dataInit = "resource=" + $scope.inputData;
+    $http.post("/tools/image",dataInit).success(function(response){
+        var result = response;
+        if(result.success){
+            $scope.showBody.error = false;
+            $scope.showBody.message = result.message;
+            $scope.imageResource.src = result.src;
+            $scope.imageResource.alt = result.alt;
+        }else {
+            $scope.showBody.error = true;
+            $scope.showBody.message = result.message;
+        }
+    });
+
     $scope.showImageMessage = function (){
         var data = "resource=" + $scope.inputData;
         $http.post("/tools/image",data).success(function(response){

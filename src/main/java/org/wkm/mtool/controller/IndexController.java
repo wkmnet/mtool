@@ -118,16 +118,21 @@ public class IndexController extends Controller {
         log.info("menuName=" + getPara("menuName"));
         log.info("menuLink=" + getPara("menuLink"));
 
+        if(StringUtils.isBlank(getPara("menuName"))){
+            renderJson(fail("菜单不能为空"));
+            return;
+        }
+
         ToolMenu menu = new ToolMenu();
         if(StringUtils.isBlank(getPara("id")) && !StringUtils.isBlank(getPara("parentId"))){
             menu.set("id", CommonUtil.createId()).set("parentId",getPara("parentId"));
-            menu.set("menuName",getPara("menuName")).set("menuLink",getPara("menuLink"));
+            menu.set("menuName",getPara("menuName").trim()).set("menuLink",getPara("menuLink"));
         }else if (!StringUtils.isBlank(getPara("id")) && !StringUtils.isBlank(getPara("parentId"))){
             menu = ToolMenu.menu.findById(getPara("id"));
             if("root".equalsIgnoreCase(getPara("parentId"))){
-                menu.set("menuName", getPara("menuName"));
+                menu.set("menuName", getPara("menuName").trim());
             } else {
-                menu.set("menuName", getPara("menuName")).set("menuLink", getPara("menuLink"));
+                menu.set("menuName", getPara("menuName").trim()).set("menuLink", getPara("menuLink"));
             }
         } else {
             renderJson(fail("非法请求"));
