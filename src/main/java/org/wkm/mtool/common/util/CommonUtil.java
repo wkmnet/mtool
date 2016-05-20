@@ -13,7 +13,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 /**
  * Created with IntelliJ IDEA.
@@ -127,5 +129,57 @@ public class CommonUtil {
             }
             return result.toString();
         }
+    }
+
+    public static String getUnicode(String chinese) throws UnsupportedEncodingException{
+        StringBuffer out = new StringBuffer("");
+        byte[] bytes = chinese.getBytes("Unicode");
+        for (int i = 0; i < bytes.length - 1; i += 2) {
+            out.append("\\u");
+            String str = Integer.toHexString(bytes[i + 1] & 0xff);
+            for (int j = str.length(); j < 2; j++) {
+                out.append("0");
+            }
+            String str1 = Integer.toHexString(bytes[i] & 0xff);
+            out.append(str1);
+            out.append(str);
+        }
+        return out.toString();
+    }
+
+    // 根据Unicode编码完美的判断中文汉字和符号
+    public static boolean isChinese(char c) {
+        Character.UnicodeBlock ub = Character.UnicodeBlock.of(c);
+        if (ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS
+                || ub == Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS
+                || ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A
+                || ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_B
+                || ub == Character.UnicodeBlock.CJK_SYMBOLS_AND_PUNCTUATION
+                || ub == Character.UnicodeBlock.HALFWIDTH_AND_FULLWIDTH_FORMS
+                || ub == Character.UnicodeBlock.GENERAL_PUNCTUATION) {
+            return true;
+        }
+        return false;
+    }
+
+    // 完整的判断中文汉字和符号
+    public static boolean isChinese(String strName) {
+        char[] ch = strName.toCharArray();
+        for (int i = 0; i < ch.length; i++) {
+            char c = ch[i];
+            if (isChinese(c)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // 只能判断部分CJK字符（CJK统一汉字）
+    public static boolean isChineseByREG(String str) {
+        if (str == null) {
+            return false;
+        }
+        Pattern pattern = Pattern.compile("[\\u4E00-\\u9FBF]+");
+        return pattern.matcher(str.trim()).find();
     }
 }

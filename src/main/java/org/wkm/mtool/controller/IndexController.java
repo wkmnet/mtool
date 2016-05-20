@@ -38,6 +38,10 @@ public class IndexController extends Controller {
         render("/html/menu.html");
     }
 
+    public void unicode(){
+        render("/html/unicode.html");
+    }
+
     /**
      * 加载所有菜单
      */

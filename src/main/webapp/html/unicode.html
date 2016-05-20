@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <!--编码格式UTF-8-->
+    <meta charset="UTF-8">
+
+    <!--favicon.ico-->
+    <link rel="icon" href="images/favicon.ico" mce_href="images/favicon.ico" type="image/x-icon">
+
+    <link rel="shortcut icon" href="images/favicon.ico" mce_href="images/favicon.ico" type="image/x-icon">
+
+    <!-- latest Angular javascript -->
+    <script src="http://cdn.bootcss.com/angular.js/1.4.2/angular.min.js"></script>
+
+    <!-- animate -->
+    <script src="http://cdn.bootcss.com/angular.js/1.4.2/angular-animate.min.js"></script>
+
+    <!--bootstrap css-->
+    <link href="http://cdn.bootcss.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
+
+    <!--jquery-->
+    <script src="http://cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
+
+    <!--bootstrap js-->
+    <script src="http://cdn.bootcss.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+
+    <!--json2 工具-->
+    <script src="/js/module/tool.js"></script>
+
+    <!--json2 工具-->
+    <script src="/js/controller/tool.js"></script>
+
+    <title>小工具</title>
+</head>
+<body>
+<div ng-app="toolApp" ng-controller="ToolsController" style="width: 80%;margin: auto">
+    <nav class="navbar navbar-inverse" role="navigation">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">小工具</a>
+        </div>
+        <div>
+            <ul class="nav navbar-nav">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        编码转换 <b class="caret"></b>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div id="unicode-panel" ng-show="bodyConfig.index == 0">
+        <button type="button" class="btn btn-info" ng-click="convert(1)">中文</button>
+        <button type="button" class="btn btn-info" ng-click="convert(0)">Unicode</button>
+        <div class="form-group">
+            <label for="input">输入源:</label>
+            <textarea class="form-control" rows="6" id="input" ng-model="unicode.source"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="output">输出源:</label>
+            <textarea class="form-control" rows="6" id="output" ng-model="unicode.target" readonly="true"></textarea>
+        </div>
+        <div class="alert alert-success alert-dismissable" ng-show="alertConfig.show" ng-hide-remove ng-hide-add-active ng-hide-remove-active>
+            <button type="button" class="close" data-dismiss="alert"
+                    aria-hidden="true">
+                &times;
+            </button>
+            {{alertConfig.message}}
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

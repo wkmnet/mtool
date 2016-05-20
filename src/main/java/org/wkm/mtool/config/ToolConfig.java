@@ -2,6 +2,8 @@ package org.wkm.mtool.config;
 
 import com.jfinal.config.*;
 import com.jfinal.ext.handler.ContextPathHandler;
+import com.jfinal.kit.Prop;
+import com.jfinal.kit.PropKit;
 import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 import com.jfinal.plugin.activerecord.dialect.MysqlDialect;
 import com.jfinal.plugin.c3p0.C3p0Plugin;
@@ -10,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wkm.mtool.common.util.CommonUtil;
 import org.wkm.mtool.controller.CalendarController;
+import org.wkm.mtool.controller.ConvertController;
 import org.wkm.mtool.controller.IndexController;
 import org.wkm.mtool.controller.ToolController;
 import org.wkm.mtool.model.HolidayList;
@@ -31,12 +34,18 @@ public class ToolConfig extends JFinalConfig{
 
     private Logger log = LoggerFactory.getLogger(this.getClass());
 
+    private Prop prop = PropKit.use("system.properties");
+
     @Override
     public void configConstant(Constants me) {
         //To change body of implemented methods use File | Settings | File Templates.
 
         //开发模式
-        me.setDevMode(true);
+        if(prop.getBoolean("open.dev.model")) {
+            me.setDevMode(true);
+        } else {
+            me.setDevMode(false);
+        }
         me.setEncoding(CommonUtil.CHARSET_UTF_8);
         me.setViewType(ViewType.JSP);
 
@@ -52,6 +61,7 @@ public class ToolConfig extends JFinalConfig{
         me.add("/", IndexController.class);
         me.add("/tool", CalendarController.class);
         me.add("/tools", ToolController.class);
+        me.add("/convert", ConvertController.class);
     }
 
     @Override
@@ -61,19 +71,25 @@ public class ToolConfig extends JFinalConfig{
 //        String userName = "root";
 //        String password = "root";
 //        String driverClass = "com.mysql.jdbc.Driver";
+        if(prop.getBoolean("open.database")){
+            log.info("start init database...");
+            initDatabase(me);
+            log.info("end init database.");
+        }
+    }
 
+    private void initDatabase(Plugins me){
         C3p0Plugin mysqlDatasource = new C3p0Plugin(loadPropertyFile("c3p0.properties"));
         me.add(mysqlDatasource);
         ActiveRecordPlugin mysqlPlugin = new ActiveRecordPlugin(mysqlDatasource);
         me.add(mysqlPlugin);
-//        mysqlPlugin.setDevMode(true);
+        mysqlPlugin.setDevMode(true); //是否开启开发模式
         mysqlPlugin.setDialect(new MysqlDialect());
         mysqlPlugin.setTransactionLevel(8);
         mysqlPlugin.setShowSql(true);
         mysqlPlugin.addMapping("toolMenu","id", ToolMenu.class);
         mysqlPlugin.addMapping("holidayList","id", HolidayList.class);
         mysqlPlugin.addMapping("tradeTime","id", TradeTime.class);
-
     }
 
     @Override
