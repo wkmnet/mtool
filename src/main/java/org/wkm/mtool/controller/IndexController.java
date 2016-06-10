@@ -1,15 +1,15 @@
 package org.wkm.mtool.controller;
 
-import com.jfinal.aop.Before;
-import com.jfinal.core.Controller;
+
+import com.jfinal.aop.Duang;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wkm.mtool.common.util.CommonUtil;
-import org.wkm.mtool.interceptor.LoggerInterceptor;
 import org.wkm.mtool.model.ToolMenu;
+import org.wkm.mtool.service.ToolMenuService;
 
 import java.io.File;
 import java.util.*;
@@ -21,8 +21,7 @@ import java.util.*;
  * Time: 上午10:38
  * To change this template use File | Settings | File Templates.
  */
-@Before(LoggerInterceptor.class)
-public class IndexController extends Controller {
+public class IndexController extends BaseController {
 
     private Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -30,11 +29,11 @@ public class IndexController extends Controller {
         render("/html/index.html");
     }
 
-    public void html(){
-        render("/html/index.html");
-    }
+//    public void html(){
+//        render("/html/index.html");
+//    }
 
-    public void menus(){
+    public void manage(){
         render("/html/menu.html");
     }
 
@@ -46,32 +45,9 @@ public class IndexController extends Controller {
      * 加载所有菜单
      */
     public void loadMenus(){
-
+        ToolMenuService toolMenuService = Duang.duang(ToolMenuService.class);
         //所有菜单
-        List<Map<String,Object>> menus = new ArrayList<Map<String,Object>>();
-
-        List<ToolMenu> roots = ToolMenu.menu.find("select * from toolMenu where parentId=?","root");
-        for(ToolMenu root:roots){
-            Map<String,Object> menu = new HashMap<String, Object>();
-            menu.put("id",root.getStr("id"));
-            menu.put("parentId",root.getStr("parentId"));
-            menu.put("menuName",root.getStr("menuName"));
-            menu.put("menuLink",root.getStr("menuLink"));
-            List<ToolMenu> children = ToolMenu.menu.find("select * from toolMenu where parentId=?",root.getStr("id"));
-            List<Map<String,Object>> childMenus = new ArrayList<Map<String,Object>>();
-            for (ToolMenu child:children){
-                Map<String,Object> childMenu = new HashMap<String, Object>();
-                childMenu.put("id",child.getStr("id"));
-                childMenu.put("parentId",child.getStr("parentId"));
-                childMenu.put("menuName",child.getStr("menuName"));
-                childMenu.put("menuLink",child.getStr("menuLink"));
-                childMenus.add(childMenu);
-            }
-            menu.put("childMenus",childMenus);
-            menus.add(menu);
-        }
-        log.info("返回数据:" + JSONArray.fromObject(menus).toString(4));
-        renderJson(menus);
+        renderJson(toolMenuService.loadAllMenus());
     }
 
     /**
@@ -79,18 +55,8 @@ public class IndexController extends Controller {
      */
     public void loadRootMenus(){
         //所有菜单
-        List<Map<String,Object>> menus = new ArrayList<Map<String,Object>>();
-
-        List<ToolMenu> roots = ToolMenu.menu.find("select * from toolMenu where parentId=?","root");
-
-        for(ToolMenu root:roots){
-            Map<String,Object> menu = new HashMap<String, Object>();
-            menu.put("id",root.getStr("id"));
-            menu.put("parentId",root.getStr("parentId"));
-            menu.put("menuName",root.getStr("menuName"));
-            menu.put("menuLink",root.getStr("menuLink"));
-            menus.add(menu);
-        }
+        ToolMenuService toolMenuService = Duang.duang(ToolMenuService.class);
+        List<Map<String,Object>> menus = toolMenuService.loadRootsMenu();
         log.info("返回数据:" + JSONArray.fromObject(menus).toString(4));
         renderJson(menus);
     }
@@ -102,7 +68,7 @@ public class IndexController extends Controller {
 
         String itemId = getPara(0);
         if(StringUtils.isBlank(itemId)){
-            renderJson(fail("无效参数"));
+            renderJson(failMessage("无效参数"));
             return;
         }
         ToolMenu menu = ToolMenu.menu.findById(itemId);
@@ -116,74 +82,74 @@ public class IndexController extends Controller {
     }
 
 
-    public void saveChildMenu(){
-        log.info("id=" + getPara("id"));
-        log.info("parentId=" + getPara("parentId"));
-        log.info("menuName=" + getPara("menuName"));
-        log.info("menuLink=" + getPara("menuLink"));
+//    public void saveChildMenu(){
+//        log.info("id=" + getPara("id"));
+//        log.info("parentId=" + getPara("parentId"));
+//        log.info("menuName=" + getPara("menuName"));
+//        log.info("menuLink=" + getPara("menuLink"));
+//
+//        if(StringUtils.isBlank(getPara("menuName"))){
+//            renderJson(failMessage("菜单不能为空"));
+//            return;
+//        }
+//
+//        ToolMenu menu = new ToolMenu();
+//        if(StringUtils.isBlank(getPara("id")) && !StringUtils.isBlank(getPara("parentId"))){
+//            menu.set("id", CommonUtil.createId()).set("parentId",getPara("parentId"));
+//            menu.set("menuName",getPara("menuName").trim()).set("menuLink",getPara("menuLink"));
+//        }else if (!StringUtils.isBlank(getPara("id")) && !StringUtils.isBlank(getPara("parentId"))){
+//            menu = ToolMenu.menu.findById(getPara("id"));
+//            if("root".equalsIgnoreCase(getPara("parentId"))){
+//                menu.set("menuName", getPara("menuName").trim());
+//            } else {
+//                menu.set("menuName", getPara("menuName").trim()).set("menuLink", getPara("menuLink"));
+//            }
+//        } else {
+//            renderJson(failMessage("非法请求"));
+//            return;
+//        }
+//        try {
+//            if(StringUtils.isBlank(getPara("id"))){
+//                if(!menu.save()){
+//                    renderJson(failMessage("操作失败！"));
+//                    return;
+//                }
+//            } else {
+//                if(!menu.update()){
+//                    renderJson(failMessage("操作失败！"));
+//                    return;
+//                }
+//            }
+//        } catch (RuntimeException e){
+//            renderJson(failMessage(e.getMessage()));
+//            return;
+//        }
+//
+//        renderJson(success("操作成功！"));
+//    }
+//
+//    public void deleteMenu(){
+//        String itemId = getPara(0);
+//        if(StringUtils.isBlank(itemId)){
+//            renderJson(failMessage("无效参数"));
+//            return;
+//        }
+//        ToolMenu menu = ToolMenu.menu.findById(itemId);
+//        if(StringUtils.equalsIgnoreCase(menu.getStr("parentId"),"root")){
+//            List<ToolMenu> children = ToolMenu.menu.find("select * from toolMenu where parentId=?",menu.getStr("id"));
+//            for(ToolMenu child:children){
+//                ToolMenu.menu.deleteById(child.getStr("id"));
+//            }
+//            ToolMenu.menu.deleteById(menu.getStr("id"));
+//        } else {
+//            ToolMenu.menu.deleteById(menu.getStr("id"));
+//        }
+//        renderJson(success("成功"));
+//    }
 
-        if(StringUtils.isBlank(getPara("menuName"))){
-            renderJson(fail("菜单不能为空"));
-            return;
-        }
-
-        ToolMenu menu = new ToolMenu();
-        if(StringUtils.isBlank(getPara("id")) && !StringUtils.isBlank(getPara("parentId"))){
-            menu.set("id", CommonUtil.createId()).set("parentId",getPara("parentId"));
-            menu.set("menuName",getPara("menuName").trim()).set("menuLink",getPara("menuLink"));
-        }else if (!StringUtils.isBlank(getPara("id")) && !StringUtils.isBlank(getPara("parentId"))){
-            menu = ToolMenu.menu.findById(getPara("id"));
-            if("root".equalsIgnoreCase(getPara("parentId"))){
-                menu.set("menuName", getPara("menuName").trim());
-            } else {
-                menu.set("menuName", getPara("menuName").trim()).set("menuLink", getPara("menuLink"));
-            }
-        } else {
-            renderJson(fail("非法请求"));
-            return;
-        }
-        try {
-            if(StringUtils.isBlank(getPara("id"))){
-                if(!menu.save()){
-                    renderJson(fail("操作失败！"));
-                    return;
-                }
-            } else {
-                if(!menu.update()){
-                    renderJson(fail("操作失败！"));
-                    return;
-                }
-            }
-        } catch (RuntimeException e){
-            renderJson(fail(e.getMessage()));
-            return;
-        }
-
-        renderJson(success("操作成功！"));
-    }
-
-    public void deleteMenu(){
-        String itemId = getPara(0);
-        if(StringUtils.isBlank(itemId)){
-            renderJson(fail("无效参数"));
-            return;
-        }
-        ToolMenu menu = ToolMenu.menu.findById(itemId);
-        if(StringUtils.equalsIgnoreCase(menu.getStr("parentId"),"root")){
-            List<ToolMenu> children = ToolMenu.menu.find("select * from toolMenu where parentId=?",menu.getStr("id"));
-            for(ToolMenu child:children){
-                ToolMenu.menu.deleteById(child.getStr("id"));
-            }
-            ToolMenu.menu.deleteById(menu.getStr("id"));
-        } else {
-            ToolMenu.menu.deleteById(menu.getStr("id"));
-        }
-        renderJson(success("成功"));
-    }
-
-    private Map<String,Object> success(String message){
-        return success(message,null);
-    }
+//    private Map<String,Object> success(String message){
+//        return success(message,null);
+//    }
 
     private Map<String,Object> success(String message,Object data){
         Map<String,Object> result = new HashMap<String, Object>();
@@ -200,7 +166,7 @@ public class IndexController extends Controller {
         return result;
     }
 
-    private Map<String,Object> fail(String message){
+    private Map<String,Object> failMessage(String message){
         Map<String,Object> result = new HashMap<String, Object>();
         result.put("isSuccess",false);
         if(StringUtils.isBlank(message)){

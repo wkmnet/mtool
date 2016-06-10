@@ -1,6 +1,7 @@
 package org.wkm.mtool.config;
 
 import com.jfinal.config.*;
+import com.jfinal.core.Controller;
 import com.jfinal.ext.handler.ContextPathHandler;
 import com.jfinal.kit.Prop;
 import com.jfinal.kit.PropKit;
@@ -11,13 +12,13 @@ import com.jfinal.render.ViewType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wkm.mtool.common.util.CommonUtil;
-import org.wkm.mtool.controller.CalendarController;
-import org.wkm.mtool.controller.ConvertController;
-import org.wkm.mtool.controller.IndexController;
-import org.wkm.mtool.controller.ToolController;
+import org.wkm.mtool.controller.*;
+import org.wkm.mtool.interceptor.LoggerInterceptor;
 import org.wkm.mtool.model.HolidayList;
 import org.wkm.mtool.model.ToolMenu;
 import org.wkm.mtool.model.TradeTime;
+
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -34,11 +35,11 @@ public class ToolConfig extends JFinalConfig{
 
     private Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private Prop prop = PropKit.use("system.properties");
-
     @Override
     public void configConstant(Constants me) {
         //To change body of implemented methods use File | Settings | File Templates.
+
+        prop = PropKit.use("system.properties");
 
         //开发模式
         if(prop.getBoolean("open.dev.model")) {
@@ -48,7 +49,10 @@ public class ToolConfig extends JFinalConfig{
         }
         me.setEncoding(CommonUtil.CHARSET_UTF_8);
         me.setViewType(ViewType.JSP);
-
+        me.setError401View("/html/index.html");
+        me.setError403View("/html/index.html");
+        me.setError404View("/html/index.html");
+        me.setError500View("/html/index.html");
         log.info("开发模式:" + me.getDevMode());
         log.info("编码:" + me.getEncoding());
     }
@@ -59,18 +63,19 @@ public class ToolConfig extends JFinalConfig{
 
         //路由设置
         me.add("/", IndexController.class);
-        me.add("/tool", CalendarController.class);
-        me.add("/tools", ToolController.class);
-        me.add("/convert", ConvertController.class);
+        me.add("/api/menu",MenuController.class);
+//        me.add("/tool", CalendarController.class);
+//        me.add("/tools", ToolController.class);
+//        me.add("/convert", ConvertController.class);
+        for(Map.Entry<String, Class<? extends Controller>> entry : me.getEntrySet()){
+            log.info("key=" + entry.getKey() + ",class=" + entry.getValue().getName());
+        }
+
     }
 
     @Override
     public void configPlugin(Plugins me) {
         //To change body of implemented methods use File | Settings | File Templates.
-//        String jdbcUrl = "jdbc:mysql://localhost:3306/oracle?useUnicode=true&characterEncoding=UTF-8";
-//        String userName = "root";
-//        String password = "root";
-//        String driverClass = "com.mysql.jdbc.Driver";
         if(prop.getBoolean("open.database")){
             log.info("start init database...");
             initDatabase(me);
@@ -95,11 +100,12 @@ public class ToolConfig extends JFinalConfig{
     @Override
     public void configInterceptor(Interceptors me) {
         //To change body of implemented methods use File | Settings | File Templates.
+        me.add(new LoggerInterceptor());
     }
 
     @Override
     public void configHandler(Handlers me) {
         //To change body of implemented methods use File | Settings | File Templates.
-        me.add(new ContextPathHandler("cxt"));
+//        me.add(new ContextPathHandler("cxt"));
     }
 }

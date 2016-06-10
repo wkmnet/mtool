@@ -6,33 +6,34 @@
 
     <!--favicon.ico-->
     <link rel="icon" href="images/favicon.ico" mce_href="images/favicon.ico" type="image/x-icon">
+
     <link rel="shortcut icon" href="images/favicon.ico" mce_href="images/favicon.ico" type="image/x-icon">
 
     <!-- latest Angular javascript -->
-    <script src="http://apps.bdimg.com/libs/angular.js/1.4.6/angular.min.js"></script>
+    <script src="http://cdn.bootcss.com/angular.js/1.4.2/angular.min.js"></script>
+
+    <!-- animate -->
+    <script src="http://cdn.bootcss.com/angular.js/1.4.2/angular-animate.min.js"></script>
 
     <!--bootstrap css-->
-    <link href="http://libs.baidu.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
-
-    <!--tool css-->
-    <link href="css/tool.css" rel="stylesheet">
+    <link href="http://cdn.bootcss.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
 
     <!--jquery-->
-    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <script src="http://cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
 
     <!--bootstrap js-->
-    <script src="http://libs.baidu.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+    <script src="http://cdn.bootcss.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
 
     <!--json2 工具-->
-    <script src="js/menu.js"></script>
+    <script src="/js/menu.js"></script>
 
-    <title>掌富通导航--首页</title>
+    <title>菜单管理--首页</title>
 </head>
 <body>
 <div ng-app="modifyMenuApp" ng-controller="modifyMenuController" style="width: 80%;margin: auto">
     <nav class="navbar navbar-inverse" role="navigation">
         <div class="navbar-header">
-            <a class="navbar-brand" href="#">掌富通导航</a>
+            <a class="navbar-brand" href="#">菜单管理</a>
         </div>
         <div>
             <ul class="nav navbar-nav">
@@ -110,13 +111,9 @@
                     </div>
                 </div>
             </form>
-            <div id="message" class="alert alert-success" ng-show="showMessage">
+            <div id="warn" class="alert alert-warning" ng-show="alertConfig.show">
                 <a href="#" class="close" data-dismiss="alert">&times;</a>
-                <strong>成功！</strong>{{message}}
-            </div>
-            <div id="warn" class="alert alert-warning" ng-show="showWarnMessage">
-                <a href="#" class="close" data-dismiss="alert">&times;</a>
-                <strong>警告！</strong>{{warnMessage}}
+                <strong>{{alertConfig.message}}</strong>
             </div>
         </div>
     </div>
